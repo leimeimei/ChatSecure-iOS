@@ -9,11 +9,21 @@
 import XCTest
 import ChatSecureCore
 
-struct TestUser {
+class TestUser {
     var account:OTRXMPPAccount
     var buddy:OTRBuddy
     var databaseManager:OTRDatabaseManager
     var signalOMEMOCoordinator:OTROMEMOSignalCoordinator
+    
+    init(account: OTRXMPPAccount,
+         buddy: OTRBuddy,
+         databaseManager:OTRDatabaseManager,
+         signalOMEMOCoordinator:OTROMEMOSignalCoordinator) {
+        self.account = account
+        self.buddy = buddy
+        self.databaseManager = databaseManager
+        self.signalOMEMOCoordinator = signalOMEMOCoordinator
+    }
 }
 
 class OTROMEMOIntegrationTest: XCTestCase {
@@ -28,13 +38,22 @@ class OTROMEMOIntegrationTest: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        FileManager.default.clearDirectory(OTRTestDatabaseManager.yapDatabaseDirectory())
+        // to prevent tests from failing we still need to setup singleton
+        OTRDatabaseManager.shared.setupTestDatabase(name: "tmp")
+        
+        [aliceUser, bobUser].forEach { (user) in
+            if let databaseDirectory = user?.databaseManager.databaseDirectory {
+                FileManager.default.clearDirectory(databaseDirectory)
+            }
+        }
     }
     
     /** Create two user accounts and save each other as buddies */
-    func setupTwoAccounts(_ name:String) {
-        let aliceName = "\(name)-alice"
-        let bobName = "\(name)-bob"
+    func setupTwoAccounts(_ inName:String) {
+        let charactersToRemove = CharacterSet.alphanumerics.inverted
+        let name = inName.components(separatedBy: charactersToRemove).joined().lowercased()
+        let aliceName = "\(name).alice"
+        let bobName = "\(name).bob"
         self.aliceUser = self.setupUserWithName(aliceName,buddyName: bobName)
         self.aliceOmemoModule = OTROMEMOTestModule(omemoStorage: self.aliceUser!.signalOMEMOCoordinator, xmlNamespace: .conversationsLegacy, dispatchQueue: nil)
         self.aliceOmemoModule?.addDelegate(self.aliceUser!.signalOMEMOCoordinator, delegateQueue: self.aliceUser!.signalOMEMOCoordinator.workQueue)
@@ -59,18 +78,19 @@ class OTROMEMOIntegrationTest: XCTestCase {
      3. An OTROMEMOSignalCoordinator to do all the signal functionality.
      */
     func setupUserWithName(_ name:String, buddyName:String) -> TestUser {
-        let databaseManager = OTRTestDatabaseManager.setupDatabaseWithName(name)
+        let databaseManager = OTRDatabaseManager()
+        databaseManager.setupTestDatabase(name: name)
         let account = TestXMPPAccount(username: "\(name)@fake.com", accountType: .jabber)!
         
-        let buddy = OTRBuddy()!
+        let buddy = OTRXMPPBuddy()!
         buddy.username = "\(buddyName)@fake.com"
         buddy.accountUniqueId = account.uniqueId
         
-        databaseManager.readWriteDatabaseConnection?.readWrite( { (transaction) in
+        databaseManager.writeConnection?.readWrite( { (transaction) in
             account.save(with:transaction)
             buddy.save(with:transaction)
         })
-        let signalOMEMOCoordinator = try! OTROMEMOSignalCoordinator(accountYapKey: account.uniqueId, databaseConnection: databaseManager.readWriteDatabaseConnection!)
+        let signalOMEMOCoordinator = try! OTROMEMOSignalCoordinator(accountYapKey: account.uniqueId, connections: databaseManager.connections!)
         return TestUser(account: account,buddy:buddy, databaseManager: databaseManager, signalOMEMOCoordinator: signalOMEMOCoordinator)
     }
     
@@ -81,11 +101,11 @@ class OTROMEMOIntegrationTest: XCTestCase {
      */
     func testDeviceSetup() {
         self.setupTwoAccounts(#function)
-        self.bobOmemoModule?.xmppStreamDidAuthenticate(nil)
+        self.bobOmemoModule?.xmppStreamDidAuthenticate(XMPPStream())
         let buddy = self.bobUser!.buddy
-        let connection = self.bobUser?.databaseManager.readOnlyDatabaseConnection
+        let connection = self.bobUser?.databaseManager.uiConnection
         connection?.read({ (transaction) in
-            let devices = OTROMEMODevice.allDevices(forParentKey: buddy.uniqueId, collection: type(of: buddy).collection(), transaction: transaction)
+            let devices = OMEMODevice.allDevices(forParentKey: buddy.uniqueId, collection: type(of: buddy).collection, transaction: transaction)
             XCTAssert(devices.count > 0)
         })
     }
@@ -99,10 +119,13 @@ class OTROMEMOIntegrationTest: XCTestCase {
     */
     func testFetchingBundleSetup() {
         self.setupTwoAccounts(#function)
-        self.bobOmemoModule?.xmppStreamDidAuthenticate(nil)
+        self.bobOmemoModule?.xmppStreamDidAuthenticate(XMPPStream())
         let expectation = self.expectation(description: "Sending Message")
         let messageText = "This is message from Bob to Alice"
-        self.bobUser!.signalOMEMOCoordinator.encryptAndSendMessage(messageText, buddyYapKey: self.bobUser!.buddy.uniqueId, messageId: "message1") { (success, error) in
+        let message = OTROutgoingMessage()!
+        message.text = messageText
+        message.buddyUniqueId = self.bobUser!.buddy.uniqueId
+        self.bobUser!.signalOMEMOCoordinator.encryptAndSendMessage(message) { (success, error) in
             
             XCTAssertTrue(success,"Able to send message")
             XCTAssertNil(error,"Error Sending \(String(describing: error))")
@@ -113,40 +136,35 @@ class OTROMEMOIntegrationTest: XCTestCase {
         self.waitForExpectations(timeout: 30, handler: nil)
         
         var messageFound = false
-        self.aliceUser?.databaseManager.readWriteDatabaseConnection?.read({ (transaction) in
-            transaction.enumerateKeysAndObjects(inCollection: OTRBaseMessage.collection(), using: { (key, object, stop) in
-                if let message = object as? OTRBaseMessage {
-                    XCTAssertEqual(message.text, messageText)
-                    messageFound = true
-                }
-                
-            })
-            
-            transaction.enumerateKeysAndObjects(inCollection: OTROMEMODevice.collection(), using: { (key, object, stop) in
-                let device = object as! OTROMEMODevice
+        self.aliceUser?.databaseManager.writeConnection?.read({ (transaction) in
+            transaction.iterateKeysAndObjects(inCollection: OTRBaseMessage.collection) { (key, message: OTRBaseMessage, stop) in
+                XCTAssertEqual(message.text, messageText)
+                messageFound = true
+                stop = true
+            }
+            transaction.iterateKeysAndObjects(inCollection: OMEMODevice.collection) { (key, device: OMEMODevice, stop) in
                 XCTAssertNotNil(device.lastSeenDate)
-            })
-            
+            }
         })
         XCTAssertTrue(messageFound,"Found message")
     }
     
     func testRemoveDevice() {
         self.setupTwoAccounts(#function)
-        self.bobOmemoModule?.xmppStreamDidAuthenticate(nil)
+        self.bobOmemoModule?.xmppStreamDidAuthenticate(XMPPStream())
         let expectation = self.expectation(description: "Remove Devices")
         let deviceNumber = NSNumber(value: 5 as Int32)
-        let device = OTROMEMODevice(deviceId: deviceNumber, trustLevel: OMEMOTrustLevel.trustedTofu, parentKey: self.bobUser!.account.uniqueId, parentCollection: OTRAccount.collection(), publicIdentityKeyData: nil, lastSeenDate: nil)
+        let device = OMEMODevice(deviceId: deviceNumber, trustLevel: OMEMOTrustLevel.trustedTofu, parentKey: self.bobUser!.account.uniqueId, parentCollection: OTRAccount.collection, publicIdentityKeyData: nil, lastSeenDate: nil)
         
-        self.bobUser?.databaseManager.readWriteDatabaseConnection?.readWrite({ (transaction) in
+        self.bobUser?.databaseManager.writeConnection?.readWrite({ (transaction) in
             
             device.save(with:transaction)
         })
         self.bobUser?.signalOMEMOCoordinator.removeDevice([device], completion: { (result) in
             XCTAssertTrue(result)
-            self.bobUser!.databaseManager.readOnlyDatabaseConnection?.read({ (transaction) in
-                let yapKey = OTROMEMODevice.yapKey(withDeviceId: deviceNumber, parentKey: self.bobUser!.account.uniqueId, parentCollection: OTRAccount.collection())
-                let device = OTROMEMODevice.fetchObject(withUniqueID: yapKey, transaction: transaction)
+            self.bobUser!.databaseManager.readConnection?.read({ (transaction) in
+                let yapKey = OMEMODevice.yapKey(withDeviceId: deviceNumber, parentKey: self.bobUser!.account.uniqueId, parentCollection: OTRAccount.collection)
+                let device = OMEMODevice.fetchObject(withUniqueID: yapKey, transaction: transaction)
                 XCTAssertNil(device)
             })
             

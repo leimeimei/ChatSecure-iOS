@@ -29,11 +29,11 @@ class OTRModelTest: XCTestCase {
         let outgoingMessage = OTROutgoingMessage()!
         outgoingMessage.text = text
         outgoingMessage.buddyUniqueId = buddyUniqueId
-        outgoingMessage.messageSecurityInfo = securityInfo!
-        let newMessage = OTROutgoingMessage.duplicate(outgoingMessage)
+        outgoingMessage.messageSecurityInfo = securityInfo
+        let newMessage = outgoingMessage.duplicateMessage()
         XCTAssertNotNil(newMessage)
-        XCTAssertEqual(newMessage?.text, text)
-        XCTAssertEqual(newMessage?.buddyUniqueId, buddyUniqueId)
-        XCTAssertEqual(newMessage?.messageSecurityInfo, securityInfo)
+        XCTAssertEqual(newMessage.messageText, text)
+        XCTAssertEqual(newMessage.threadId, buddyUniqueId)
+        XCTAssertEqual(newMessage.messageSecurity, securityInfo.messageSecurity)
     }
 }

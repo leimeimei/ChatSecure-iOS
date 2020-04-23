@@ -1,7 +1,63 @@
 {
+    "CONNECTION_ERROR_STRING": {
+        "comment": "alert title for connection errors",
+        "string": "There was an error connecting to account"
+    },
+    "CONNECTION_ERROR_CERTIFICATE_VERIFY_STRING": {
+        "comment": "alert title for connection errors",
+        "string": "Please re-verify the server's certificate."
+    },
     "ABOUT_STRING": {
         "comment": "Title for the about page",
         "string": "About"
+    },
+    "ACTIVE_BUDDIES_STRING": {
+        "comment": "segmented control value for active friends",
+        "string": "Active"
+    },
+    "ALLOW_DB_PASSPHRASE_BACKUP_DESCRIPTION_STRING": {
+        "comment": "Description for allowing DB passphrase backup",
+        "string": "Restore iTunes backups to new devices"
+    },
+    "ALLOW_DB_PASSPHRASE_BACKUP_TITLE_STRING": {
+        "comment": "Title for allowing DB passphrase backup",
+        "string": "Allow Device Migration"
+    },
+    "AUDIO_MESSAGE_STRING": {
+        "comment": "Text for media message summary",
+        "string": "Audio Message"
+    },
+    "MORE_WAYS_TO_HELP_STRING": {
+        "comment": "button for additional ways to help support development of the app",
+        "string": "More Ways to Help"
+    },
+    "VIDEO_MESSAGE_STRING": {
+        "comment": "Text for media message summary",
+        "string": "Video Message"
+    },
+    "PICTURE_MESSAGE_STRING": {
+        "comment": "Text for media message summary",
+        "string": "Picture Message"
+    },
+    "FILE_MESSAGE_STRING": {
+        "comment": "Text for file message summary",
+        "string": "File Message"
+    },
+    "JOIN_GROUP_STRING": {
+        "comment": "Text for joining existing XMPP room",
+        "string": "Join Group"
+    },
+    "ARCHIVE_STRING": {
+        "comment": "Noun. segmented control value for displaying archived conversations",
+        "string": "Archive"
+    },
+    "ARCHIVE_ACTION_STRING": {
+        "comment": "Verb. action for archiving an old conversation",
+        "string": "Archive"
+    },
+    "UNARCHIVE_ACTION_STRING": {
+        "comment": "Verb. action for moving archived converation back to inbox",
+        "string": "Unarchive"
     },
     "ABOUT_VERSION_STRING": {
         "comment": "Label for button to show version numbers and licenses",
@@ -99,6 +155,10 @@
         "comment": "Copy string to clipboard as in copy and paste",
         "string": "Copy"
     },
+    "COPY_LINK_STRING": {
+        "comment": "Copy link URL to clipboard as in copy and paste",
+        "string": "Copy Link"
+    },
     "CREATED_BY_STRING": {
         "comment": "Start of sentence that will be followed by names",
         "string": "Created by"
@@ -114,6 +174,10 @@
     "CREATING_ACCOUNT_STRING": {
         "comment": "Title for progress of creating a new account",
         "string": "Creating Account"
+    },
+    "DELETE_STRING": {
+        "comment": "action button for deleting something",
+        "string": "Delete"
     },
     "DELETE_ACCOUNT_MESSAGE_STRING": {
         "comment": "Ask user if they want to delete the stored account information",
@@ -143,6 +207,10 @@
         "comment": "e.g. for deactivating your push account",
         "string": "Deactivate"
     },
+    "DID_YOU_KNOW_DONATION_STRING": {
+        "comment": "prompt users to donate money",
+        "string": "Did you know you can now help fund future development directly within the app?"
+    },
     "DONATE_MESSAGE_STRING": {
         "comment": "Message shown when about to donate",
         "string": "Your donation will help fund the continued development of ChatSecure."
@@ -155,6 +223,10 @@
         "comment": "Title for button to press when user is finished",
         "string": "Done"
     },
+    "DOWNLOAD_STRING": {
+        "comment": "Title for button to download something",
+        "string": "Download"
+    },
     "DO_NOT_DISTURB_STRING": {
         "comment": "Default message when a user status is set to do not disturb",
         "string": "Do Not Disturb"
@@ -166,6 +238,14 @@
     "EMAIL_STRING": {
         "comment": "The string describing account name or email address for a buddy",
         "string": "Email"
+    },
+    "ENABLE_DEBUG_LOGGING_STRING": {
+        "comment": "switch label for toggling debug logs",
+        "string": "Enable Debug Logging"
+    },
+    "ENABLE_DEBUG_LOGGING_HELP_STRING": {
+        "comment": "extra information about debug logging",
+        "string": "Beware! These logs are for debugging purposes only and will contain sensitive material like usernames, passwords, contacts, and message history. Disabling this option will delete all existing logs."
     },
     "ENCRYPTION_ERROR_STRING": {
         "comment": "Generic title for encryption errors",
@@ -182,6 +262,14 @@
     "EXTENDED_AWAY_STRING": {
         "comment": "Default message when a user status is set to extended away",
         "string": "Extended Away"
+    },
+    "EXPERIMENTAL_STRING": {
+        "comment": "Section for experimental settings",
+        "string": "Experimental"
+    },
+    "INBOX_STRING": {
+        "comment": "segmented control value for active conversations",
+        "string": "Inbox"
     },
     "FACEBOOK_STRING": {
         "comment": "the name for facebook",
@@ -259,6 +347,10 @@
         "comment": "log out from account",
         "string": "Log Out"
     },
+    "MANAGE_DEBUG_LOGS_STRING": {
+        "comment": "Manage the device logs",
+        "string": "Manage Debug Logs"
+    },
     "MANAGE_MY_KEYS": {
         "comment": "Button to manage your OTR and OMEMO keys",
         "string": "Manage My Keys"
@@ -270,6 +362,62 @@
     "MESSAGE_COULD_NOT_BE_SENT_STRING": {
         "comment": "Explanation for why a message could not be sent.",
         "string": "The message could not be sent because this contact cannot receive your messages at this time. This could occur because they are offline, or if you are not authorized to send them messages."
+    },
+    "MESSAGE_FRIENDS_WITH_NEW_INFO_STRING": {
+        "comment": "Title for toggle switch to spam your friends with your new account info",
+        "string": "Notify Contacts of New Account"
+    },
+    "MIGRATION_FORM_DETAIL_STRING": {
+        "comment": "Description detail text for account migration form",
+        "string": "We will automatically migrate your contacts from your old account to the new one, and archive your old conversations.\\n\\nIf you'd like, we can also notify your existing contacts that your account has moved."
+    },
+    "MIGRATION_STRING": {
+        "comment": "Title for migration header view",
+        "string": "It's time to move!"
+    },
+    "MIGRATION_INFO_STRING": {
+        "comment": "Explanation for why migration is needed",
+        "string": "Your account currently lives on the %1$@ servers. That chat service is no longer in service, so we're going to help move your account to a new server."
+    },
+    "MIGRATION_INFO_WITH_DATE_STRING": {
+        "comment": "Explanation for why migration is needed, contains a shutdown date",
+        "string": "Your account currently lives on the %1$@ servers. That chat service is closing on %2$@, so we're going to help move your account to a new server."
+    },
+    "MIGRATION_NOTIFICATION_STRING": {
+        "comment": "Explanation that your account has expired and you need to migrate",
+        "string": "Your account has expired."
+    },
+    "MIGRATION_NOTIFICATION_WITH_DATE_STRING": {
+        "comment": "Explanation that your account has expired and you need to migrate, contains a shutdown date",
+        "string": "Your account is expiring in '%1$d' days."
+    },
+    "MIGRATION_START_STRING": {
+        "comment": "Title for button to start migration tool",
+        "string": "Get Started"
+    },
+    "MIGRATE_ACCOUNT_STRING": {
+        "comment": "Title for button to start migration tool",
+        "string": "Migrate Account"
+    },
+    "MIGRATED_BUDDY_STRING": {
+        "comment": "Title for migrated buddy header view",
+        "string": "Buddy has moved!"
+    },
+    "MIGRATED_BUDDY_INFO_STRING": {
+        "comment": "Explanation that buddy has a different prefered jid in the vcard",
+        "string": "Your buddy has a different forwarding address than the jid you are currently chatting with. Do you want to switch to this account instead?"
+    },
+    "MIGRATED_BUDDY_IGNORE": {
+        "comment": "Button to ignore the migrated buddy warning",
+        "string": "Ignore"
+    },
+    "MIGRATED_BUDDY_SWITCH": {
+        "comment": "Button to switch the chat over to the migrated account",
+        "string": "Switch"
+    },
+    "MY_NEW_ACCOUNT_INFO_STRING": {
+        "comment": "label for new account info for migration",
+        "string": "My new account information"
     },
     "NAME_STRING": {
         "comment": "The string describing a buddy's display name",
@@ -287,9 +435,17 @@
         "comment": "For a new settings value",
         "string": "New"
     },
+    "NEW_MESSAGE_STRING": {
+        "comment": "when a new message notification is received",
+        "string": "New Message!"
+    },
     "NEXT_STRING": {
         "comment": "Label for button to go to next step",
         "string": "Next"
+    },
+    "NOTIFICATIONS_STRING": {
+        "comment": "Label for notifications switch",
+        "string": "Notifications"
     },
     "OFFLINE_STRING": {
         "comment": "Label in buddy list for users that are offline",
@@ -302,6 +458,18 @@
     "OLD_STRING": {
         "comment": "For an old settings value",
         "string": "Old"
+    },
+    "OMEMO_GROUP_ENCRYPTION_STRING": {
+        "comment": "toggling switch for showing OMEMO group encryption",
+        "string": "Allow OMEMO Group Encryption"
+    },
+    "OMEMO_GROUP_ENCRYPTION_DETAIL_STRING": {
+        "comment": "toggling switch detail for showing OMEMO group encryption",
+        "string": "Note: this does not automatically enable group encryption. It must also be manually enabled on a per-group basis."
+    },
+    "OMEMO_GROUP_ENCRYPTION_STRING": {
+        "comment": "For an old settings value",
+        "string": "OMEMO Group Encryption"
     },
     "OPEN_IN_SAFARI": {
         "comment": "Label to open link in the Safari web browser",
@@ -326,6 +494,14 @@
     "OTHER_STRING": {
         "comment": "Title for other miscellaneous settings group",
         "string": "Other"
+    },
+    "AUTO_URL_FETCH_STRING": {
+        "comment": "Title for other miscellaneous settings group",
+        "string": "Automatically Fetch Media"
+    },
+    "AUTO_URL_FETCH_WARNING_STRING": {
+        "comment": "Title for other miscellaneous settings group",
+        "string": "All incoming messages containing URLs will be fetched by default to show a media preview. This is required for media messaging to work properly. Disable this if you do not trust your contacts."
     },
     "OTRL_MSGEVENT_CONNECTION_ENDED_STRING": {
         "comment": "Error string for OTR message string",
@@ -443,6 +619,10 @@
         "comment": "Label for switch to save passphrase",
         "string": "Remember Passphrase"
     },
+    "MAYBE_LATER_STRING": {
+        "comment": "button to do something later",
+        "string": "Maybe Later"
+    },
     "REMEMBER_PASSWORD_STRING": {
         "comment": "label for switch for whether or not we should save their password between launches",
         "string": "Remember password"
@@ -470,6 +650,10 @@
     "SAVED_CERTIFICATES_STRING": {
         "comment": "Title for listing the user saved SSL certificates",
         "string": "Saved Certificates"
+    },
+    "PAYMENTS_UNAVAILABLE_STRING": {
+        "comment": "Title for alert when user isn't allowed to make payments",
+        "string": "Payments Unavailable"
     },
     "SAVE_STRING": {
         "comment": "Title for button for saving a setting",
@@ -503,6 +687,10 @@
         "comment": "Title for sharing a link to the app",
         "string": "Share"
     },
+    "SHOW_CONSOLE_STRING": {
+        "comment": "button label for showing log console",
+        "string": "Show Console"
+    },
     "SHOW_USERVOICE_STRING": {
         "comment": "actionsheet for showing uservoice feedback service",
         "string": "Would you like to connect to UserVoice to send feedback?"
@@ -518,6 +706,10 @@
     "SOURCE_STRING": {
         "comment": "let users know source is on Github",
         "string": "Check out the source here on Github"
+    },
+    "SOMEONE_IS_TYPING_STRING": {
+        "comment": "received a typing notification",
+        "string": "Someone is typing..."
     },
     "TOR_WARNING_MESSAGE_STRING": {
         "comment": "Message for warning about using tor network",
@@ -566,6 +758,14 @@
     "XMPP_USERNAME_EXAMPLE_STRING": {
         "comment": "Example of a username using the words user and example",
         "string": "user@example.com"
+    },
+    "YOU_HAVE_BEEN_INVITED_TO_GROUP_STRING": {
+        "comment": "Title of screen for joining/not joining group",
+        "string": "You have been invited to the ´%@´ group."
+    },
+    "COULD_NOT_PARSE_URL_STRING": {
+        "comment": "Error description",
+        "string": "Could not parse URL."
     },
     "errSSLBadCertString": {
         "comment": "SSL error message",
@@ -851,6 +1051,14 @@
         "comment": "The placeholder text for the text field to enter a group chat name or label",
         "string": "Enter a group name"
     },
+    "GROUP_GRANT_ADMIN_STRING": {
+        "comment": "Label for granting admin privileges to someone in a group",
+        "string": "Make Admin"
+    },
+    "GROUP_REVOKE_MEMBERSHIP_STRING": {
+        "comment": "Label for revoking membership for someone in a group",
+        "string": "Kick Out"
+    },
     "RESEND_STRING": {
         "comment": "Label for button to resend message.",
         "string": "Resend"
@@ -875,6 +1083,10 @@
         "comment": "Describes an error without a known cause",
         "string": "Unknown Error"
     },
+    "USER_CANCELED_STRING" : {
+        "comment": "Describes a state entered by user cancelation",
+        "string": "Canceled"
+    },
     "ENABLE_PUSH_STRING" : {
         "comment": "button for enabling push messages",
         "string": "Enable Push"
@@ -890,6 +1102,10 @@
     "RESEND_DESCRIPTION_STRING" : {
         "comment": "Describe what resending will do the %@ will be replaced withe the method OTR/OMEMO/Plaintext",
         "string": "Resending this message will use %@."
+    },
+    "THANK_YOU_FOR_CONTRIBUTION" : {
+        "comment": "string shown if user has already paid",
+        "string": "Thank you for your contribution!"
     },
     "VIEW_PROFILE_DESCRIPTION_STRING" : {
         "comment": "Describe how to change a contact's device settings",
@@ -933,6 +1149,9 @@
     }, "Me_String": {
         "comment": "",
         "string" : "Me"
+    }, "AUTOMATIC_DOWNLOADS_DISABLED_STRING": {
+        "comment": "error",
+        "string" : "Automatic Downloads Disabled"
     }, "Microphone_Disabled": {
         "comment": "microphone permission is disabled",
         "string" : "Microphone Disabled"
@@ -992,7 +1211,19 @@
         "string": "Server Information"
     }, "Server_String_Hint": {
         "comment": "server selection footer",
-        "string": "Choose from our list of trusted servers, or use your own."
+        "string": "Choose from a selection of public servers, or use your own."
+    }, "PLEASE_CONTACT_SERVER_OP_STRING": {
+        "comment": "Error string for when there is a server configuration error.",
+        "string": "Please contact your server administrator."
+    }, "NO_HTTP_UPLOAD_SERVERS_STRING": {
+        "comment": "Error string for when there are no XEP-0363 upload servers.",
+        "string": "No HTTP upload servers found."
+    }, "FILE_NOT_FOUND_STRING": {
+        "comment": "Error",
+        "string": "File not found."
+    }, "FILE_EXCEEDS_MAX_SIZE_STRING": {
+        "comment": "Error string for when file is too big.",
+        "string": "File exceeds maximum size."
     }, "Enable_Tor_String": {
         "comment": "",
         "string": "Enable Tor"
@@ -1008,5 +1239,23 @@
     }, "ACTIVE_STRING": {
         "comment": "This will be displayed in the UI as 'Active 10m ago' ",
         "string": "Active"
+    }, "GROUP_INFO_YOU": {
+        "comment": "This will be shown after your own JID in the group profile view",
+        "string": "you"
+    }, "ADD_FRIEND_TO_AUTO_DOWNLOAD": {
+        "comment": "Shown in chat view to prompt user to add friend for auto-download of group media messages.",
+        "string": "Is %@ your friend? Add him/her to auto-download pictures in the future."
+    }, "STORAGE_USAGE_TITLE": {
+        "comment": "Storage usage setting title",
+        "string": "Storage Usage"
+    }, "STORAGE_USAGE_DESCRIPTION": {
+        "comment": "Storage usage setting description",
+        "string": "Manage downloaded media"
+    }, "STORAGE_USAGE_DELETE_ALL_BUTTON": {
+        "comment": "Delete all media button",
+        "string": "Delete All"
+    }, "STORAGE_USAGE_NO_MEDIA_FOUND": {
+        "comment": "No media found clarification",
+        "string": "No downloaded media found in chats"
     }
 }

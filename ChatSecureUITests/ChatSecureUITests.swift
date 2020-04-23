@@ -34,6 +34,13 @@ func skipEnablePush(_ app:XCUIApplication) {
     }
 }
 
+func skipDonatePrompt(_ app:XCUIApplication) {
+    let maybeLater = app.buttons[localizedString("Maybe Later")]
+    if (maybeLater.exists) {
+        maybeLater.tap()
+    }
+}
+
 class ChatSecureUITests: XCTestCase {
         
     override func setUp() {
@@ -48,6 +55,12 @@ class ChatSecureUITests: XCTestCase {
         setupSnapshot(app)
 
         // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
+        
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            XCUIDevice.shared.orientation = .landscapeLeft
+        } else {
+            XCUIDevice.shared.orientation = .portrait
+        }
     }
     
     override func tearDown() {
@@ -60,31 +73,28 @@ class ChatSecureUITests: XCTestCase {
         app.launchEnvironment["OTRLaunchMode"] = "ChatSecureUITests"
         app.launch()
         skipEnablePush(app)
+        skipDonatePrompt(app)
         
-        XCTAssertTrue(app.buttons[localizedString("Skip")].exists, "Skip button exists")
-        XCTAssertTrue(app.buttons[localizedString("Create New Account")].exists, "Create new Account button exists")
-        XCTAssertTrue(app.buttons[localizedString("Add Existing Account")].exists, "Add existing account button exists")
-        
+        if app.buttons[localizedString("Skip")].exists {
+            XCTAssertTrue(app.buttons[localizedString("Skip")].exists, "Skip button exists")
+            XCTAssertTrue(app.buttons[localizedString("Create New Account")].exists, "Create new Account button exists")
+            XCTAssertTrue(app.buttons[localizedString("Add Existing Account")].exists, "Add existing account button exists")
+        } else {
+            let chatsNavigationBar = app.navigationBars[localizedString("Chats")]
+            chatsNavigationBar.buttons[localizedString("Chats")].tap()
+            chatsNavigationBar.children(matching: .button).element(boundBy: 1).tap()
+            app.tables["settingsTableView"].staticTexts[localizedString("New Account")].tap()
+            app.buttons[localizedString("Create New Account")].tap()
+        }
         app.buttons[localizedString("Create New Account")].tap()
         
         let tablesQuery = app.tables
         tablesQuery.cells.containing(.staticText, identifier:localizedString("Nickname")).children(matching: .textField).element.typeText("Alice")
         
-        //This is the done button really
-
-        switch UIDevice.current.userInterfaceIdiom  {
-        case .phone:
-            XCUIApplication().toolbars.buttons.element(boundBy: 2).tap()
-            break
-        case .pad:
-            XCUIApplication().toolbars.buttons.element(boundBy: 3).tap()
-            break
-        default:
-            break
-        }
+        let keyboardDismissButton = app.toolbars["Toolbar"].buttons.element(boundBy: 2)
+        keyboardDismissButton.tap()
         
         tablesQuery.switches[localizedString("Show Advanced Options")].tap()
-        
         
         tablesQuery.switches[localizedString("Enable Tor")].tap()
         
@@ -96,13 +106,13 @@ class ChatSecureUITests: XCTestCase {
         app.launchEnvironment["OTRLaunchMode"] = "ChatSecureUITestsDemoData"
         app.launch()
         skipEnablePush(app)
-        
+        skipDonatePrompt(app)
+
         switch UIDevice.current.userInterfaceIdiom  {
         case .phone:
             snapshot("02ConversationListScreen")
             break
         case .pad:
-            XCUIDevice.shared().orientation = .landscapeLeft
             break
         default:
             break
@@ -113,15 +123,6 @@ class ChatSecureUITests: XCTestCase {
         snapshot("03ChatScreen")
         XCUIApplication().buttons["profileButton"].tap()
         snapshot("04ProfileScreen")
-        
-//        app.navigationBars["Profile"].buttons["Done"].tap()
-//        
-//        let chatsNavigationBar = app.navigationBars["Chats"]
-//        chatsNavigationBar.buttons["Chats"].tap()
-//        chatsNavigationBar.childrenMatchingType(.Button).elementBoundByIndex(1).tap()
-//        app.tables["settingsTableView"].staticTexts["New Account"].tap()
-//        app.buttons["Create New Account"].tap()
-        
     }
-    
+
 }

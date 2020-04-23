@@ -91,6 +91,12 @@ static NSString *const GOOGLE_APP_SCOPE = @"GOOGLE_APP_SCOPE";
     return url;
 }
 
++ (NSURL *)testflightSignupURL {
+    NSString *urlString = [[self defaultPlist] objectForKey:@"TestflightSignupURL"];
+    NSURL *url = [NSURL URLWithString:urlString];
+    return url;
+}
+
 #pragma mark Strings
 
 /** The default XMPP resource (e.g. username@example.com/chatsecure) */
@@ -118,23 +124,66 @@ static NSString *const GOOGLE_APP_SCOPE = @"GOOGLE_APP_SCOPE";
     return [[self defaultPlist] objectForKey:@"UserVoiceSite"];
 }
 
-/** PayPal donation URL */
-+ (nullable NSURL*) paypalURL {
-    NSString *urlString = [[self defaultPlist] objectForKey:@"PayPalURL"];
-    if (!urlString) { return nil; }
-    return [NSURL URLWithString:urlString];
-}
-
-/** Bitcoin donation URL (e.g. Coinbase) */
-+ (nullable NSURL*) bitcoinURL {
-    NSString *urlString = [[self defaultPlist] objectForKey:@"BitcoinURL"];
-    if (!urlString) { return nil; }
-    return [NSURL URLWithString:urlString];
+/** UserVoice Site */
++ (nullable NSString*) appStoreID {
+    return [[self defaultPlist] objectForKey:@"AppStoreID"];
 }
 
 /** If enabled, will show a ⚠️ symbol next to your account when push may have issues */
 + (BOOL) shouldShowPushWarning {
     BOOL result = [[[self defaultPlist] objectForKey:@"ShouldShowPushWarning"] boolValue];
+    return result;
+}
+
+/** If enabled, the server selection cell will be shown when creating new accounts. Otherwise it will be hidden in the 'advanced' section. */
++ (BOOL) shouldShowServerCell {
+    BOOL result = [[[self defaultPlist] objectForKey:@"ShouldShowServerCell"] boolValue];
+    return result;
+}
+
++ (BOOL) showsColorForStatus {
+    BOOL result = [[[self defaultPlist] objectForKey:@"ShowsColorForStatus"] boolValue];
+    return result;
+}
+
++ (BOOL) torEnabled {
+    BOOL result = [[[self defaultPlist] objectForKey:@"TorEnabled"] boolValue];
+    return result;
+}
+
++ (BOOL) allowGroupOMEMO {
+    if (![self allowOMEMO]) {
+        return NO;
+    }
+    BOOL result = [[[self defaultPlist] objectForKey:@"AllowGroupOMEMO"] boolValue];
+    return result;
+}
+
++ (BOOL) allowDebugFileLogging {
+    BOOL result = [[[self defaultPlist] objectForKey:@"AllowDebugFileLogging"] boolValue];
+    return result;
+}
+
++ (BOOL) allowOMEMO {
+    NSNumber *result = [[self defaultPlist] objectForKey:@"AllowOMEMO"];
+    if (!result) {
+        return YES;
+    } else {
+        return result.boolValue;
+    }
+}
+
+/** Returns true if we're running the official ChatSecure */
++ (BOOL) matchesUpstream {
+    return [[[NSBundle mainBundle] bundleIdentifier] containsString:@"com.chrisballinger.ChatSecure"];
+}
+
++ (BOOL) allowsDonation {
+    // Only allow this for upstream
+    if (![self matchesUpstream]) {
+        return NO;
+    }
+    BOOL result = [[[self defaultPlist] objectForKey:@"AllowsDonation"] boolValue];
     return result;
 }
 
@@ -152,12 +201,9 @@ static NSString *const GOOGLE_APP_SCOPE = @"GOOGLE_APP_SCOPE";
 
 @implementation OTRAssets
 
-/** Returns OTRResources.bundle */
+/** Returns resources bundle */
 + (NSBundle*) resourcesBundle {
-    NSString *folderName = @"OTRResources.bundle";
-    NSString *bundlePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:folderName];
-    NSBundle *dataBundle = [NSBundle bundleWithPath:bundlePath];
-    return dataBundle;
+    return NSBundle.mainBundle;
 }
 
 @end

@@ -12,6 +12,8 @@
 	<string>https://www.googleapis.com/auth/googletalk</string>
 	<key>GitHubURL</key>
 	<string>https://github.com/ChatSecure/ChatSecure-iOS/</string>
+	<key>AppStoreID</key>
+	<string>464200063</string>
 	<key>FacebookAppURL</key>
 	<string>fb://profile/151354555075008</string>
 	<key>FacebookWebURL</key>
@@ -29,14 +31,24 @@
 	<key>pushAPIURL</key>
 	<string>https://push.chatsecure.org/api/v1/</string>
 	<key>StagingPushAPIURL</key>
-	<string>https://push-staging.chatsecure.org/api/v1/</string>
-	<key>UserVoiceSite</key>
-	<string>chatsecure.uservoice.com</string>
-	<key>PayPalURL</key>
-	<string>https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&amp;hosted_button_id=6YFSLLQGDZFXY</string>
-	<key>BitcoinURL</key>
-	<string>https://coinbase.com/checkouts/0a35048913df24e0ec3d586734d456d7</string>
+	<string>https://chatsecure-push-staging.herokuapp.com/api/v1</string>
+	<key>TestflightSignupURL</key>
+	<string>https://goo.gl/forms/p8XAiaJFvodl7DLk2</string>
 	<key>ShouldShowPushWarning</key>
+	<true/>
+	<key>ShouldShowServerCell</key>
+	<true/>
+	<key>ShowsColorForStatus</key>
+	<true/>
+	<key>AllowsDonation</key>
+	<true/>
+	<key>TorEnabled</key>
+	<false/>
+	<key>AllowGroupOMEMO</key>
+	<true/>
+	<key>AllowDebugFileLogging</key>
+	<false/>
+	<key>AllowOMEMO</key>
 	<true/>
 </dict>
 </plist>

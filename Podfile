@@ -1,90 +1,79 @@
-# Disable CocoaPods deterministic UUIDs as Pods are not checked in
-ENV["COCOAPODS_DISABLE_DETERMINISTIC_UUIDS"] = "true"
+install! 'cocoapods', :deterministic_uuids => false
 
-# Disable Bitcode for all targets http://stackoverflow.com/a/32685434/805882
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    target.build_configurations.each do |config|
-      config.build_settings['ENABLE_BITCODE'] = 'NO'
-    end
+# Blocked on https://github.com/CocoaLumberjack/CocoaLumberjack/issues/1105
+#, :generate_multiple_pod_projects => true
+
+platform :ios, "12.0"
+
+use_modular_headers!
+inhibit_all_warnings!
+
+source 'https://cdn.cocoapods.org/'
+
+workspace 'ChatSecure.xcworkspace'
+project 'ChatSecure.xcodeproj', 'iOS_Debug' => :debug, 'macOS_Debug' => :debug, 'iOS_Release' => :release, 'macOS_Release' => :release
+
+abstract_target 'ChatSecureCorePods' do  
+
+  # https://github.com/zxingify/zxingify-objc/pull/491
+  pod 'ZXingObjC/QRCode', :git => 'https://github.com/ChatSecure/ZXingObjC.git', :branch => 'fix-catalyst'
+
+  # Catalyst patch won't be merged upstream
+  pod 'SQLCipher', :git => 'https://github.com/ChatSecure/sqlcipher.git', :branch => 'v4.3.0-catalyst'
+
+  pod 'ParkedTextField', :git => 'https://github.com/gmertk/ParkedTextField.git', :commit => 'a3800e3' # Swift 4.2
+  pod 'JSQMessagesViewController', :path => 'Submodules/JSQMessagesViewController/JSQMessagesViewController.podspec'
+
+  pod 'LumberjackConsole', :path => 'Submodules/LumberjackConsole/LumberjackConsole.podspec'
+
+  # Network
+  # pod 'CPAProxy', :path => 'Submodules/CPAProxy/CPAProxy.podspec'
+  pod 'XMPPFramework/Swift', :path => 'Submodules/XMPPFramework/XMPPFramework.podspec'
+
+  pod 'ChatSecure-Push-iOS', :path => 'Submodules/ChatSecure-Push-iOS/ChatSecure-Push-iOS.podspec'
+
+  # Waiting on merge https://github.com/yapstudios/YapDatabase/pull/492
+  pod 'YapDatabase/SQLCipher', :path => 'Submodules/YapDatabase/YapDatabase.podspec'
+
+  # The upstream 1.3.2 has a regression https://github.com/ChatSecure/ChatSecure-iOS/issues/1075
+  pod 'libsqlfs/SQLCipher', :path => 'Submodules/libsqlfs/libsqlfs.podspec'
+
+  pod 'IOCipher/GCDWebServer', :path => 'Submodules/IOCipher/IOCipher.podspec'
+  pod 'YapTaskQueue/SQLCipher', :path => 'Submodules/YapTaskQueue/YapTaskQueue.podspec'
+
+  # Crypto
+  pod 'SignalProtocolObjC', :path => 'Submodules/SignalProtocol-ObjC/SignalProtocolObjC.podspec'
+  pod 'OTRKit', :path => 'Submodules/OTRKit/OTRKit.podspec'
+
+  pod 'ChatSecureCore', :path => 'ChatSecureCore.podspec'
+  pod 'OTRAssets', :path => 'OTRAssets.podspec'
+
+  target 'ChatSecureTests'
+  target 'ChatSecure'
+  target 'ChatSecureCore'
+end
+
+
+def fix_config(config)
+  # https://github.com/CocoaPods/CocoaPods/issues/8069#issuecomment-420044112
+  if config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 8.0
+    config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '8.0'
+  end
+  # https://github.com/CocoaPods/CocoaPods/issues/8891
+  if config.build_settings['DEVELOPMENT_TEAM'].nil?
+    config.build_settings['DEVELOPMENT_TEAM'] = '4T8JLQR6GR'
   end
 end
 
-platform :ios, "8.0"
-
-use_frameworks!
-
-source 'https://github.com/CocoaPods/Specs.git'
-
-abstract_target 'ChatSecureCorePods' do
-  pod 'AFNetworking', '~> 3.1'
-  pod "Appirater", '~> 2.0'
-  pod 'OpenInChrome', '~> 0.0'
-  pod 'MWFeedParser', '~> 1.0'
-  pod "CocoaLumberjack", '~> 2.3.0'
-  pod 'KSCrash', '~> 1.15.3'
-  pod 'MBProgressHUD', '~> 1.0'
-  pod "SAMKeychain", '~> 1.5'
-  # pod 'gtm-oauth2', '~> 0.1.0' # Trunk is outdated, using local podspec
-  pod 'YapDatabase/SQLCipher', '~> 2.9'
-  #pod 'YapDatabase/SQLCipher', :path => 'Submodules/YapDatabase/YapDatabase.podspec'
-
-  pod 'Mantle', '~> 2.0'
-  pod 'Navajo', '~> 0.0'
-  # wating on 8.0 https://github.com/jessesquires/JSQMessagesViewController/pull/840
-  # using for in meantime
-  # pod 'JSQMessagesViewController', '~> 8.0'
-  pod 'BBlock', '~> 1.2'
-  pod 'JVFloatLabeledTextField', '~> 1.0'
-  pod 'TTTAttributedLabel', '~> 2.0'
-  pod 'VTAcknowledgementsViewController', '~> 1.2'
-  pod 'PureLayout', '~> 3.0'
-  pod 'BButton', '~> 4.0'
-  pod 'uservoice-iphone-sdk', '~> 3.2'
-  pod 'TUSafariActivity', '~> 1.0'
-  pod 'ARChromeActivity', '~> 1.0'
-  # We need a commit from next release
-  #pod 'CocoaAsyncSocket', '~> 7.4'
-  pod 'CocoaAsyncSocket', '~> 7.6.0'
-  pod 'ProxyKit/Client', '~> 1.2.0'
-
-  pod 'JTSImageViewController', '~> 1.4'
-  pod 'KVOController', '~> 1.0'
-  #Reachability only needed for YapActionItems
-  pod 'Reachability', '~> 3'
-  pod 'XLForm', '~> 3.3'
-  #pod 'ParkedTextField', '~> 0.2'
-  pod 'FormatterKit/TimeIntervalFormatter', '~> 1.8.2'
-
-  # QR Codes
-  pod 'QRCodeReaderViewController', '~> 4.0'
-  pod 'ZXingObjC', '~> 3.0'
-
-  pod 'SignalProtocolC', :podspec => 'https://raw.githubusercontent.com/ChatSecure/SignalProtocolC.podspec/b2b483fe1c4c66cecfc0376c496e6a58ed1939b5/SignalProtocolC.podspec'
-  pod 'libsqlfs/SQLCipher', :git => 'https://github.com/ChatSecure/libsqlfs.git', :branch => 'podspec-fix'
-  pod 'ParkedTextField', :git => 'https://github.com/gmertk/ParkedTextField.git', :tag => '0.3.0'
-
-  # Local Podspecs
-  pod 'gtm-http-fetcher', :podspec => 'Podspecs/gtm-http-fetcher.podspec'
-  pod 'gtm-oauth2', :podspec => 'Podspecs/gtm-oauth2.podspec'
-
-  # Forks
-  pod 'JSQMessagesViewController', :git => 'https://github.com/ChatSecure/JSQMessagesViewController', :tag => '7.3.4-send_button'
-
-  pod 'YapTaskQueue/SQLCipher', :git => 'https://github.com/ChatSecure/YapTaskQueue.git', :branch => '0.2.0-escaping-closure'
-  # pod 'YapTaskQueue/SQLCipher', '~> 0.2' # Waiting on @escaping fix upstream
-
-  # Submodules
-
-  pod 'SignalProtocol-ObjC', :path => 'Submodules/SignalProtocol-ObjC/SignalProtocol-ObjC.podspec'
-  pod 'ChatSecure-Push-iOS', :path => 'Submodules/ChatSecure-Push-iOS/ChatSecure-Push-iOS.podspec'
-  pod 'OTRKit', :path => 'Submodules/OTRKit/OTRKit.podspec'
-  pod 'CPAProxy', :path => 'Submodules/CPAProxy/CPAProxy.podspec'
-  pod 'XMPPFramework', :path => 'Submodules/XMPPFramework/XMPPFramework.podspec'
-  pod 'IOCipher/GCDWebServer', :path => 'Submodules/IOCipher/IOCipher.podspec'
-
-
-  target 'ChatSecureCore'
-  target 'ChatSecureTests'
-  target 'ChatSecure'
+post_install do |installer|
+  installer.generated_projects.each do |project|
+    project.build_configurations.each do |config|
+        fix_config(config)
+    end
+    project.targets.each do |target|
+      target.build_configurations.each do |config|
+        fix_config(config)
+      end
+    end
+  end
 end

@@ -14,6 +14,7 @@ FOUNDATION_EXPORT double ChatSecureCoreVersionNumber;
 //! Project version string for ChatSecureCore.
 FOUNDATION_EXPORT const unsigned char ChatSecureCoreVersionString[];
 
+#import "OTRBuddyCache.h"
 #import "OTRUserInfoProfile.h"
 #import "OTRAccount.h"
 #import "OTRXMPPManager.h"
@@ -32,8 +33,7 @@ FOUNDATION_EXPORT const unsigned char ChatSecureCoreVersionString[];
 #import "OTRConstants.h"
 #import "OTRDatabaseManager.h"
 #import "OTRAppDelegate.h"
-#import "OTRTheme.h"
-#import "OTRPushTLVHandlerProtocols.h"
+#import "AppTheme.h"
 #import "OTREncryptionManager.h"
 #import "OTRQRCodeActivity.h"
 #import "OTRIncomingMessage.h"
@@ -44,7 +44,6 @@ FOUNDATION_EXPORT const unsigned char ChatSecureCoreVersionString[];
 #import "OTRConversationViewController.h"
 #import "OTRMessagesViewController.h"
 #import "OTRMessagesHoldTalkViewController.h"
-#import "OTRMessagesGroupViewController.h"
 #import "OTRComposeViewController.h"
 #import "OTRSettingsViewController.h"
 #import "OTRNewBuddyViewController.h"
@@ -62,7 +61,9 @@ FOUNDATION_EXPORT const unsigned char ChatSecureCoreVersionString[];
 #import "OTRLanguageSetting.h"
 #import "OTRListSetting.h"
 #import "OTRValueSetting.h"
-
+#import "OTRAccountMigrationViewController.h"
+#import "OTRActivityItemProvider.h"
+#import "OTRDownloadMessage.h"
 
 #import "NSURL+ChatSecure.h"
 #import "UIImage+ChatSecure.h"
@@ -80,7 +81,18 @@ FOUNDATION_EXPORT const unsigned char ChatSecureCoreVersionString[];
 #import "YapDatabaseViewConnection+ChatSecure.h"
 #import "OTRCertificatePinning.h"
 #import "OTRXMPPServerInfo.h"
-#import "XMPPPushModule.h"
+#import "OTRAccountMigrator.h"
+#import "OTRXMPPError.h"
+#import "OTRXMPPRoomManager.h"
+#import "OTRQRCodeReaderDelegate.h"
+#import "OTRBuddyApprovalCell.h"
+#import "RoomOccupantRole.h"
+
+
+#import "OTRImageItem.h"
+#import "OTRAudioItem.h"
+#import "OTRVideoItem.h"
+
 
 //Signal Models
 #import "OTRAccountSignalIdentity.h"
@@ -90,4 +102,4 @@ FOUNDATION_EXPORT const unsigned char ChatSecureCoreVersionString[];
 #import "OTRSignalSession.h"
 
 //OMEMO Models
-#import "OTROMEMODevice.h"
+#import "OMEMODevice.h"
